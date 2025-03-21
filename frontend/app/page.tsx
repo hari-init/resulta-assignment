@@ -80,7 +80,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!socket) {
-      socket = io('http://localhost:5001');
+      socket = io('https://backend-6pbu.onrender.com');
     }
 
     socket.on('connect', () => {
