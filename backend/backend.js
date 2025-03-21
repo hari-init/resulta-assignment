@@ -10,7 +10,7 @@ const io = new Server(server, { cors: { origin: "*" } });
 const PORT = 5001;
 
 // URL for the mock API
-const MOCK_API_URL = 'http://localhost:5000/api/teams';
+const MOCK_API_URL = 'https://mock-zu2m.onrender.com/api/teams';
 
 // Store the last known update time
 let lastUpdateTime = null;
