@@ -1,0 +1,18 @@
+{
+  "name": "resulta-assignment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:frontend": "cd frontend && npm run dev", 
+    "start:backend": "cd backend && node backend.js",   
+    "start:mock": "cd mock && node mock.js",
+    "start": "concurrently \"npm run start:mock\" \"npm run start:backend\" \"npm run start:frontend\""
+  },
+  "keywords": [],
+  "author": "hari",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
