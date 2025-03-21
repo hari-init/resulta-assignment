@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import './globals.css'
 
 export const metadata = {
@@ -12,7 +13,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <header>
+          <Image src="/logo.png" alt="Up Arrow" width="80" height="35" />
+          <p>ACME</p>
+        </header>
+        {children}</body>
     </html>
   )
 }

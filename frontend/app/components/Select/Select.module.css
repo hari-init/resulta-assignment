@@ -59,3 +59,9 @@
     background-color: #2196f357;
     /* color: #fff; */
 }
+
+@media (max-width: 768px) {
+    .label {
+        margin-right: 0px;
+    }
+}

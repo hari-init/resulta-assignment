@@ -5,6 +5,7 @@ import { io, Socket } from 'socket.io-client';
 import styles from './page.module.css';
 import TeamTable from './components/TeamTable/TeamTable';
 import Select from './components/Select/Select';
+import Shimmer from './components/Shimmer/Shimmer';
 
 interface Team {
   id: string;
@@ -215,13 +216,17 @@ export default function Home() {
           <div className={styles.socket}>
             SocketIO: <span style={{ backgroundColor: isConnected ? '#4caf50b3' : '#e91e1e8a' }}>{isConnected ? 'Connected' : 'Disconnected'} </span>
           </div>
+          <div className={styles.statusDivider}>|</div>
           Last Updated: {lastUpdated.split(',')[1]}
         </div>
       </div>
       <div className={styles.container}>
         {isUpdated ? <span className={styles.loader}></span> : ''}
-        <TeamTable isHead={true} list={teams} />
-        <TeamTable isHead={false} list={teams} />
+
+        {teamsData ? <>
+          <TeamTable isHead={true} list={teams} />
+          <TeamTable isHead={false} list={teams} />
+        </> : <Shimmer count={5} />}
       </div>
     </div>
   );

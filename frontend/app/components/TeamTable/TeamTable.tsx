@@ -39,10 +39,10 @@ const TeamTable: React.FC<TeamTableProps> = ({ isHead, list }) => {
                                 alt="Picture of the author"
                             /> : null}
                             {item.name}</div>
-                        <div>{item.nickname}</div>
-                        <div>{item.display_name}</div>
-                        <div>{item.conference}</div>
-                        <div>{item.division}</div>
+                        <div><span className={styles.mobElement}>NICKNAME :</span> {item.nickname}</div>
+                        <div><span className={styles.mobElement}>DISPLAY NAME :</span> {item.display_name}</div>
+                        <div><span className={styles.mobElement}>CONFERENCE : </span> {item.conference}</div>
+                        <div><span className={styles.mobElement}>DIVISION :</span> {item.division}</div>
                     </div>
                 ))
             )}

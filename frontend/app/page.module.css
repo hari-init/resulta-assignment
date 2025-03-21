@@ -6,12 +6,13 @@
   width: 100%;
   background-color: #f1f0f5;
   flex-direction: column;
+  padding: 20px 0px;
 }
 
 .container {
   width: 90%;
   max-width: 1200px;
-  min-height: 500px;
+  min-height: 700px;
   padding: 20px;
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -65,8 +66,43 @@
   animation: l1 0.8s infinite linear;
 }
 
+.statusDivider {
+  display: none;
+}
+
 @keyframes l1 {
   0% {
     background-position: right
+  }
+}
+
+
+@media (max-width: 768px) {
+  .controlsCenter {
+    flex-direction: column-reverse;
+    align-items: unset;
+  }
+
+  .controls {
+    justify-content: space-between;
+    margin-right: 0;
+  }
+
+  .status {
+    justify-content: center;
+    flex-direction: row;
+    align-items: baseline;
+  }
+
+  .statusDivider {
+    display: inline;
+    font-size: 14px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .status,
+  .status span {
+    font-size: 12px;
   }
 }
