@@ -30,7 +30,7 @@ interface TeamsData {
   [league: string]: Team[] | string;
 }
 
-export default function HomeClient() {
+export default function Page() {
   const [teamsData, setTeamsData] = useState<TeamsData | null>(null);
   const [selectedLeague, setSelectedLeague] = useState<string>("");
   const [selectedSortBy, setSelectedSortBy] = useState<string>("name");

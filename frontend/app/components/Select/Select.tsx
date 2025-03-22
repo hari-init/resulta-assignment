@@ -56,7 +56,6 @@ const Select: React.FC<SelectProps> = ({
         <div
           className={`${styles.dropdownHeader} ${isOpen ? styles.open : ""}`}
           onClick={toggleDropdown}
-          role="button"
         >
           {selectedOption || `Select ${label.toLowerCase()}`}
           <Image
@@ -67,7 +66,7 @@ const Select: React.FC<SelectProps> = ({
           />
         </div>
         {isOpen && (
-          <ul className={styles.dropdownList} role="listbox">
+          <ul className={styles.dropdownList}>
             {options.map((option) => (
               <li
                 key={option}

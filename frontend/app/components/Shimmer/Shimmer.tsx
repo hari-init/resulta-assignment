@@ -36,6 +36,7 @@ const Shimmer: React.FC<ShimmerProps> = ({ count = 1 }) => {
         {Array.from({ length: count }, (_, i) => (
           <div
             key={i}
+            data-testid="shimmer-wrapper-desktop"
             className={`${styles.shimmerWrapper} ${styles.shimmerTable}`}
           >
             {Array.from({ length: 5 }, (_, i) => (
