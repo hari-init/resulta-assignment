@@ -1,28 +1,31 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import styles from './Select.module.css';
 import Image from 'next/image';
 
 interface SelectProps {
-    selectedLeague: string;
-    handleChange: (league: string) => void;
-    leagues: string[];
+    selectedOption: string;
+    handleChange: (option: string) => void;
+    options: string[];
     label: string;
 }
 
-const Select: React.FC<SelectProps> = ({ selectedLeague, handleChange, leagues, label }) => {
+const Select: React.FC<SelectProps> = ({ selectedOption, handleChange, options, label }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     // Toggle dropdown visibility
-    const toggleDropdown = () => {
+    const toggleDropdown = useCallback(() => {
         setIsOpen((prev) => !prev);
-    };
+    }, []);
 
-    // Handle league selection
-    const handleSelect = (league: string) => {
-        handleChange(league);
-        setIsOpen(false); // Close dropdown after selection
-    };
+    // Handle option selection
+    const handleSelect = useCallback(
+        (option: string) => {
+            handleChange(option);
+            setIsOpen(false); // Close dropdown after selection
+        },
+        [handleChange]
+    );
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -38,6 +41,8 @@ const Select: React.FC<SelectProps> = ({ selectedLeague, handleChange, leagues, 
         };
     }, []);
 
+
+
     return (
         <div className={styles.label} ref={dropdownRef}>
             <p className={styles.labelName}>{label}</p>
@@ -46,38 +51,24 @@ const Select: React.FC<SelectProps> = ({ selectedLeague, handleChange, leagues, 
                     className={`${styles.dropdownHeader} ${isOpen ? styles.open : ''}`}
                     onClick={toggleDropdown}
                     role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            toggleDropdown();
-                        }
-                    }}
                 >
-                    {selectedLeague || 'Select a league'}
-                    {isOpen ? (
-                        <Image src="/caret-up.svg" alt="Up Arrow" width="26" height="26" />
-                    ) : (
-                        <Image src="/caret-down.svg" alt="Down Arrow" width="26" height="26" />
-                    )}
+                    {selectedOption || `Select ${label.toLowerCase()}`}
+                    <Image
+                        src={isOpen ? '/caret-up.svg' : '/caret-down.svg'}
+                        alt={isOpen ? 'Up Arrow' : 'Down Arrow'}
+                        width={26}
+                        height={26}
+                    />
                 </div>
                 {isOpen && (
-                    <ul className={styles.dropdownList}>
-                        {leagues.map((league) => (
+                    <ul className={styles.dropdownList} role="listbox">
+                        {options.map((option) => (
                             <li
-                                key={league}
-                                className={`${styles.dropdownItem} ${selectedLeague === league ? styles.selected : ''
-                                    }`}
-                                onClick={() => handleSelect(league)}
-                                role="option"
-                                aria-selected={selectedLeague === league}
-                                tabIndex={0}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                        handleSelect(league);
-                                    }
-                                }}
+                                key={option}
+                                className={`${styles.dropdownItem} ${selectedOption === option ? styles.selected : ''}`}
+                                onClick={() => handleSelect(option)}
                             >
-                                {league}
+                                {option}
                             </li>
                         ))}
                     </ul>
