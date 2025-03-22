@@ -1,6 +1,16 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, memo } from "react";
 import styles from "./Select.module.css";
 import Image from "next/image";
+
+/**
+ * This Selection component involves little tricker implementation
+ * like adding own styled dropdown and handling outside click to close the drop down
+ *
+ * 1.Handled the selection callback for both league selection and sortby option.
+ * 2.wrapped with memo for optimization.
+ * 3.Handled document level click event.
+ * 4.Used Image for the icons (next/image).
+ */
 
 interface SelectProps {
   selectedOption: string;
@@ -9,40 +19,37 @@ interface SelectProps {
   label: string;
 }
 
-const Select: React.FC<SelectProps> = ({
+const Select: React.FC<SelectProps> = memo(function Select({
   selectedOption,
   handleChange,
   options,
   label,
-}) => {
+}) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Toggle dropdown visibility
-  const toggleDropdown = useCallback(() => {
-    setIsOpen((prev) => !prev);
-  }, []);
+  const toggleDropdown = () => {
+    setIsOpen((prev) => {
+      return !prev;
+    });
+  };
 
-  // Handle option selection
-  const handleSelect = useCallback(
-    (option: string) => {
-      handleChange(option);
-      setIsOpen(false); // Close dropdown after selection
-    },
-    [handleChange]
-  );
+  const handleSelect = (option: string) => {
+    handleChange(option);
+    setIsOpen(false);
+  };
 
-  // Close dropdown when clicking outside
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node) &&
+      dropdownRef?.current?.id !== "dropDown"
+    ) {
+      setIsOpen(false);
+    }
+  };
+
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -54,6 +61,7 @@ const Select: React.FC<SelectProps> = ({
       <p className={styles.labelName}>{label}</p>
       <div className={styles.dropdown}>
         <div
+          id="dropDown"
           className={`${styles.dropdownHeader} ${isOpen ? styles.open : ""}`}
           onClick={toggleDropdown}
         >
@@ -83,6 +91,6 @@ const Select: React.FC<SelectProps> = ({
       </div>
     </div>
   );
-};
+});
 
 export default Select;

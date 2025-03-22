@@ -12,7 +12,19 @@ import dynamic from "next/dynamic";
 import styles from "./page.module.css";
 import Select from "./components/Select/Select";
 
-// Dynamically import components for code splitting
+/**
+ * This is the Main component of the application where it receives the Data from
+ * the Backend through Socket IO, and updates the view with the data
+ *
+ * 1. Shimmer component for fallback UI.
+ * 2. TeamTable component for showing team data.
+ * 3. Select Component for both league and sortby dropdowns.
+ *
+ * Overall all the reference are cached with useCallback and useMemo hook inside
+ * handled dynamic loading
+ */
+
+// Dynamically import components for code splitting (as of now in this SPA it will not bring that much difference)
 const TeamTable = dynamic(() => import("./components/TeamTable/TeamTable"));
 const Shimmer = dynamic(() => import("./components/Shimmer/Shimmer"));
 
@@ -45,9 +57,9 @@ export default function Page() {
       socketRef.current = io("https://backend-6pbu.onrender.com");
     }
 
+    //Assigned in Ref to avoid frequent state update
     const socket = socketRef.current;
 
-    // Handle connection events
     socket.on("connect", () => {
       console.log("Connected to Socket.IO server");
       setIsConnected(true);
@@ -58,14 +70,26 @@ export default function Page() {
       setIsConnected(false);
     });
 
-    // Handle data updates
     socket.on("data_update", (data: TeamsData) => {
       console.log("Received data update:", data);
-      setTeamsData(data);
+      setTeamsData((prev: any) => {
+        if (!prev) {
+          return data;
+        }
+        Object.keys(data).forEach((key) => {
+          if (key === "last_updated") {
+            prev.last_updated = data.last_updated;
+          } else {
+            prev[key] = data[key]; // To avoid the reference change while state change
+          }
+        });
+
+        return prev;
+      });
       setIsUpdated(true);
     });
 
-    // Cleanup on unmount
+    // Cleanup function
     return () => {
       socket.disconnect();
     };
@@ -78,13 +102,17 @@ export default function Page() {
   }, [teamsData]);
 
   const sortBys = useMemo(() => {
-    if (!teamsData || !teamsData[selectedLeague]) return [];
-    return Object.keys((teamsData[selectedLeague] as Team[])[0]).filter(
+    if (!teamsData) return [];
+    return Object.keys(Object.values(teamsData)[1][1]).filter(
       (key) => key !== "id"
     );
-  }, [teamsData, selectedLeague]);
+  }, [teamsData]);
 
-  // Memoized teams list based on selected league and sort option
+  /** Memoized teams list based on selected league and sort option
+   * This can be handled on Backend or Server (Next.js) but for this
+   * Single page i handled here
+   */
+
   const teams = useMemo(() => {
     if (!teamsData || !teamsData[selectedLeague]) return [];
     const leagueData = teamsData[selectedLeague] as Team[];
@@ -115,7 +143,9 @@ export default function Page() {
     }
   }, [teamsData, selectedLeague, leagues]);
 
-  // Clear the update indicator after 800ms
+  /** This is used to show and hide the loading indicator on top the
+   *  table container
+   */
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (isUpdated) {
@@ -163,6 +193,8 @@ export default function Page() {
         {isUpdated && <span className={styles.loader}></span>}
         {teamsData ? (
           <>
+            {/* One for rendering header with static array and 
+            another for dynamic list of data */}
             <TeamTable isHead={true} list={teams} />
             <TeamTable isHead={false} list={teams} />
           </>

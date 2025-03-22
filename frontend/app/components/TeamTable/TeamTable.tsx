@@ -1,6 +1,14 @@
-import React from "react";
+import React, { memo } from "react";
 import Image from "next/image";
 import styles from "./TeamTable.module.css";
+
+/**
+ * This Component is used for representing the teams data
+ * its straight forward component gets and updates the data.
+ *
+ * 1.Wrapped with memo to make this as pure component.
+ * 2.Handled Image with next/image module for optimization.
+ */
 
 interface Team {
   id: string;
@@ -17,8 +25,11 @@ interface TeamTableProps {
   list: Team[];
 }
 
-const TeamTable: React.FC<TeamTableProps> = ({ isHead, list }) => {
-  // Define the table headers
+const TeamTable: React.FC<TeamTableProps> = memo(function TeamTable({
+  isHead,
+  list,
+}) {
+  // Table headers
   const headers = [
     "NAME",
     "NICKNAME",
@@ -30,14 +41,12 @@ const TeamTable: React.FC<TeamTableProps> = ({ isHead, list }) => {
   return (
     <>
       {isHead ? (
-        // Render the table header
         <div className={`${styles.tablerow} ${styles.header}`}>
           {headers.map((header, index) => (
             <div key={index}>{header}</div>
           ))}
         </div>
       ) : (
-        // Render the table rows
         list.map((item) => (
           <div className={styles.tablerow} key={item.id}>
             <div className={styles.logo}>
@@ -52,19 +61,19 @@ const TeamTable: React.FC<TeamTableProps> = ({ isHead, list }) => {
               {item.name}
             </div>
             <div>
-              <span className={styles.mobElement}>NICKNAME :</span>{" "}
+              <span className={styles.mobElement}>NICKNAME :</span>
               {item.nickname}
             </div>
             <div>
-              <span className={styles.mobElement}>DISPLAY NAME :</span>{" "}
+              <span className={styles.mobElement}>DISPLAY NAME :</span>
               {item.display_name}
             </div>
             <div>
-              <span className={styles.mobElement}>CONFERENCE :</span>{" "}
+              <span className={styles.mobElement}>CONFERENCE :</span>
               {item.conference}
             </div>
             <div>
-              <span className={styles.mobElement}>DIVISION :</span>{" "}
+              <span className={styles.mobElement}>DIVISION :</span>
               {item.division}
             </div>
           </div>
@@ -72,6 +81,6 @@ const TeamTable: React.FC<TeamTableProps> = ({ isHead, list }) => {
       )}
     </>
   );
-};
+});
 
 export default TeamTable;

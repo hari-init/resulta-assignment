@@ -6,6 +6,7 @@ interface ShimmerProps {
 }
 
 const Shimmer: React.FC<ShimmerProps> = ({ count = 1 }) => {
+  console.log("rendering Shimmer component");
   return (
     <>
       <div className={styles.isMob}>

@@ -36,3 +36,8 @@ header {
 header p {
   margin-left: 45px;
 }
+
+.logoContainer {
+  display: flex;
+  flex-direction: column;
+}

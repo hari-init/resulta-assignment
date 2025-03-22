@@ -1,19 +1,23 @@
-import Image from 'next/image';
-import './globals.css';
+import Image from "next/image";
+import "./globals.css";
 
 export const metadata = {
-  title: 'Resulta - ACME',
-  description: 'ACME Sports',
+  title: "Resulta - ACME",
+  description: "ACME Sports",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <head>
         <link rel="icon" type="image/png" href="/favicon.png" />
       </head>
       <body>
-        <header className="header">
+        <header>
           <div className="logoContainer">
             <Image
               src="/logo.png"
