@@ -1,6 +1,6 @@
 .tablerow {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr;
   gap: 8px;
   font-size: 14px;
   border-bottom: 1px solid #ddd;

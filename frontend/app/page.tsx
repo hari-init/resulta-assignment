@@ -74,11 +74,18 @@ export default function Page() {
       console.log("Received data update:", data);
       setTeamsData((prev) => {
         if (!prev) {
-          return data;
+          return {
+            ...data,
+            last_updated: new Date(data.last_updated)
+              .toLocaleString()
+              .split(",")[1],
+          };
         }
         Object.keys(data).forEach((key) => {
           if (key === "last_updated") {
-            prev.last_updated = data.last_updated;
+            prev.last_updated = new Date(data.last_updated)
+              .toLocaleString()
+              .split(",")[1];
           } else {
             prev[key] = data[key]; // To avoid the reference change while state change
           }
@@ -183,10 +190,8 @@ export default function Page() {
             </span>
           </div>
           <div className={styles.statusDivider}>|</div>
-          Last Updated:{" "}
-          {teamsData?.last_updated
-            ? new Date(teamsData.last_updated).toLocaleString().split(",")[1]
-            : "N/A"}
+          Last Updated:
+          {teamsData?.last_updated ? teamsData.last_updated : "N/A"}
         </div>
       </div>
       <div className={styles.container}>
