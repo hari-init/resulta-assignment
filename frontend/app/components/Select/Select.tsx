@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback, memo } from "react";
+import React, { useState, useRef, useEffect, memo } from "react";
 import styles from "./Select.module.css";
 import Image from "next/image";
 

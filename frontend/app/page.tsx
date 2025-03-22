@@ -72,7 +72,7 @@ export default function Page() {
 
     socket.on("data_update", (data: TeamsData) => {
       console.log("Received data update:", data);
-      setTeamsData((prev: any) => {
+      setTeamsData((prev) => {
         if (!prev) {
           return data;
         }
