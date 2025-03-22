@@ -1,11 +1,20 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { io, Socket } from 'socket.io-client';
-import styles from './page.module.css';
-import TeamTable from './components/TeamTable/TeamTable';
-import Select from './components/Select/Select';
-import Shimmer from './components/Shimmer/Shimmer';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
+import { io, Socket } from "socket.io-client";
+import dynamic from "next/dynamic";
+import styles from "./page.module.css";
+import Select from "./components/Select/Select";
+
+// Dynamically import components for code splitting
+const TeamTable = dynamic(() => import("./components/TeamTable/TeamTable"));
+const Shimmer = dynamic(() => import("./components/Shimmer/Shimmer"));
 
 interface Team {
   id: string;
@@ -21,26 +30,57 @@ interface TeamsData {
   [league: string]: Team[] | string;
 }
 
-export default function Home() {
+export default function HomeClient() {
   const [teamsData, setTeamsData] = useState<TeamsData | null>(null);
-  const [selectedLeague, setSelectedLeague] = useState<string>('');
-  const [selectedSortBy, setSelectedSortBy] = useState<string>('name');
-  const [lastUpdated, setLastUpdated] = useState<string>('');
+  const [selectedLeague, setSelectedLeague] = useState<string>("");
+  const [selectedSortBy, setSelectedSortBy] = useState<string>("name");
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isUpdated, setIsUpdated] = useState<boolean>(false);
 
   const socketRef = useRef<Socket | null>(null);
 
+  // Initialize Socket.IO connection
+  useEffect(() => {
+    if (!socketRef.current) {
+      socketRef.current = io("https://backend-6pbu.onrender.com");
+    }
+
+    const socket = socketRef.current;
+
+    // Handle connection events
+    socket.on("connect", () => {
+      console.log("Connected to Socket.IO server");
+      setIsConnected(true);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Disconnected from Socket.IO server");
+      setIsConnected(false);
+    });
+
+    // Handle data updates
+    socket.on("data_update", (data: TeamsData) => {
+      console.log("Received data update:", data);
+      setTeamsData(data);
+      setIsUpdated(true);
+    });
+
+    // Cleanup on unmount
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
   // Memoized leagues and sort options
   const leagues = useMemo(() => {
     if (!teamsData) return [];
-    return Object.keys(teamsData).filter((key) => key !== 'last_updated');
+    return Object.keys(teamsData).filter((key) => key !== "last_updated");
   }, [teamsData]);
 
   const sortBys = useMemo(() => {
     if (!teamsData || !teamsData[selectedLeague]) return [];
     return Object.keys((teamsData[selectedLeague] as Team[])[0]).filter(
-      (key) => key !== 'id'
+      (key) => key !== "id"
     );
   }, [teamsData, selectedLeague]);
 
@@ -51,7 +91,7 @@ export default function Home() {
     return [...leagueData].sort((a, b) => {
       const aValue = a[selectedSortBy as keyof Team];
       const bValue = b[selectedSortBy as keyof Team];
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
+      if (typeof aValue === "string" && typeof bValue === "string") {
         return aValue.localeCompare(bValue);
       }
       return 0;
@@ -74,32 +114,6 @@ export default function Home() {
       setSelectedLeague(leagues[0]);
     }
   }, [teamsData, selectedLeague, leagues]);
-
-  // Socket.IO connection and data update handling
-  useEffect(() => {
-    if (!socketRef.current) {
-      socketRef.current = io('https://backend-6pbu.onrender.com');
-    }
-
-    const socket = socketRef.current;
-
-    socket.on('connect', () => setIsConnected(true));
-    socket.on('disconnect', () => setIsConnected(false));
-
-    const handleDataUpdate = (data: TeamsData) => {
-      setIsUpdated(true);
-      setTeamsData(data);
-      setLastUpdated(new Date(data.last_updated).toLocaleString());
-    };
-
-    socket.on('data_update', handleDataUpdate);
-
-    return () => {
-      socket.off('data_update', handleDataUpdate);
-      socket.off('connect');
-      socket.off('disconnect');
-    };
-  }, []);
 
   // Clear the update indicator after 800ms
   useEffect(() => {
@@ -129,17 +143,20 @@ export default function Home() {
         </div>
         <div className={styles.status}>
           <div className={styles.socket}>
-            SocketIO:{' '}
+            SocketIO:{" "}
             <span
               style={{
-                backgroundColor: isConnected ? '#4caf50b3' : '#e91e1e8a',
+                backgroundColor: isConnected ? "#4caf50b3" : "#e91e1e8a",
               }}
             >
-              {isConnected ? 'Connected' : 'Disconnected'}
+              {isConnected ? "Connected" : "Disconnected"}
             </span>
           </div>
           <div className={styles.statusDivider}>|</div>
-          Last Updated: {lastUpdated.split(',')[1]}
+          Last Updated:{" "}
+          {teamsData?.last_updated
+            ? new Date(teamsData.last_updated).toLocaleString().split(",")[1]
+            : "N/A"}
         </div>
       </div>
       <div className={styles.container}>

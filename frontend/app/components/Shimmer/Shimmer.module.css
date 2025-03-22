@@ -1,60 +1,59 @@
 .shimmer {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: shimmer-animation 1.5s infinite linear;
-    margin-bottom: 2px;
-    border-radius: 50px;
-
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer-animation 1.5s infinite linear;
+  margin-bottom: 2px;
+  border-radius: 50px;
 }
 
 .shimmerWrapper {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 .shimmerTable {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
 }
 
 .shimmerHeader {
-    height: 15px;
-    width: 50%;
-    margin-bottom: 5px;
+  height: 15px;
+  width: 50%;
+  margin-bottom: 5px;
 }
 
 .shimmerSubHeader {
-    height: 15px;
-    width: 90%;
+  height: 15px;
+  width: 90%;
 }
 
 .shimmerParagraph {
-    height: 10px;
+  height: 10px;
 }
 
 @keyframes shimmer-animation {
-    0% {
-        background-position: -200% 0;
-    }
+  0% {
+    background-position: -200% 0;
+  }
 
-    100% {
-        background-position: 200% 0;
-    }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .isMob {
-    display: none
+  display: none;
 }
 
 .isTable {
-    display: inline;
+  display: inline;
 }
 
 @media (max-width: 768px) {
-    .isMob {
-        display: inline
-    }
+  .isMob {
+    display: inline;
+  }
 
-    .isTable {
-        display: none;
-    }
+  .isTable {
+    display: none;
+  }
 }
